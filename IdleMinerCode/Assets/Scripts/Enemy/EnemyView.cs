@@ -17,8 +17,6 @@ namespace Komastar.IdleMiner.Enemy
 
         private void Awake()
         {
-            cam = Camera.main;
-            damageTextParent = UIDamageTextPresenter.Get();
         }
 
         private void LateUpdate()
@@ -43,6 +41,16 @@ namespace Komastar.IdleMiner.Enemy
 
         public void Setup()
         {
+            if (ReferenceEquals(null, cam))
+            {
+                cam = Camera.main;
+            }
+
+            if (ReferenceEquals(null, damageTextParent))
+            {
+                damageTextParent = UIDamageTextPresenter.Get();
+            }
+
             OnTrigger = null;
             OnAttack = null;
             gameObject.SetActive(true);

@@ -23,11 +23,6 @@ namespace Komastar.IdleMiner.Enemy
         private bool isCombat;
         private float nextAttackTime;
 
-        private void Awake()
-        {
-            dataManager = DataManager.Get();
-        }
-
         private void Update()
         {
             if (isCombat)
@@ -42,6 +37,11 @@ namespace Komastar.IdleMiner.Enemy
 
         public void Setup(WaveDO wave)
         {
+            if (ReferenceEquals(null, dataManager))
+            {
+                dataManager = DataManager.Get();
+            }
+
             EnemyDO enemyData = dataManager.GetEnemy(wave.Id);
             name = enemyData.Name;
 
