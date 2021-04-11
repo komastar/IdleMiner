@@ -1,0 +1,9 @@
+{
+    "Id": 7,
+    "Name": "Iron\nSpear",
+    "GearType": "Weapon",
+    "Status": {
+        "Atk": 6,
+        "Hp": 2
+    }
+}

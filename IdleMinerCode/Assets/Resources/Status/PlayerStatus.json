@@ -1,0 +1,12 @@
+{
+    "Id": 0,
+    "Base": {
+        "Atk": 1,
+        "Hp": 100,
+        "MoveSpeed": 5.0
+    },
+    "Growth": {
+        "Atk": 1,
+        "Hp": 15
+    }
+}
