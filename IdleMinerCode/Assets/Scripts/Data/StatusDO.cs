@@ -8,10 +8,12 @@ namespace Komastar.IdleMiner.Data
         public int Atk;
         public int Hp;
         public float MoveSpeed;
+        public float AtkSpeed;
 
         public override string ToString()
         {
-            return $"Atk:{Atk} / Hp:{Hp} / MoveSpeed:{MoveSpeed}";
+            return $"Atk:{Atk} / Hp:{Hp}\n" +
+                $"MvSpd:{MoveSpeed} / AtkSpd : {AtkSpeed}";
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Komastar.IdleMiner.Interface;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Komastar.IdleMiner.Player

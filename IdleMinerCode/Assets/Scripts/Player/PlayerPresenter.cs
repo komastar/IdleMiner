@@ -1,9 +1,11 @@
 ﻿using Komastar.IdleMiner.Data;
 using Komastar.IdleMiner.Enemy;
+using Komastar.IdleMiner.Interface;
 using Komastar.IdleMiner.Manager;
 using Komastar.IdleMiner.Stage;
 using Komastar.IdleMiner.UI;
 using Komastar.IdleMiner.UI.Player;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -26,7 +28,6 @@ namespace Komastar.IdleMiner.Player
         [SerializeField]
         private EnemyPresenter enemyPresenter;
 
-        private bool isCombat;
         private float nextAttackTime;
 
         private void OnDestroy()
@@ -36,12 +37,12 @@ namespace Komastar.IdleMiner.Player
 
         private void Update()
         {
-            if (isCombat)
+            if (!ReferenceEquals(null, view.Target))
             {
                 if (nextAttackTime <= Time.time)
                 {
                     nextAttackTime = Time.time + 1f;
-                    view.Attack();
+                    view.Interact();
                 }
             }
         }
@@ -55,8 +56,7 @@ namespace Komastar.IdleMiner.Player
             model.OnChangeAtk += infoView.OnChangeAtk;
             model.Setup();
 
-            view.OnTrigger += OnTriggerView;
-            view.OnAttack += Attack;
+            view.OnAfterInteract += AfterInteract;
 
             enemyPresenter.OnDeath += OnDeathEnemy;
 
@@ -71,11 +71,6 @@ namespace Komastar.IdleMiner.Player
             model.EarnExp(enemyData.Exp);
         }
 
-        private void OnTriggerView(bool isCollision)
-        {
-            isCombat = isCollision;
-        }
-
         public int GetStageLevel()
         {
             return model.StageLevel;
@@ -83,7 +78,7 @@ namespace Komastar.IdleMiner.Player
 
         public float GetMoveSpeed()
         {
-            if (isCombat)
+            if (!ReferenceEquals(null, view.Target))
             {
                 return 0f;
             }
@@ -92,6 +87,7 @@ namespace Komastar.IdleMiner.Player
                 return model.Current.MoveSpeed;
             }
         }
+
         public int GetWeaponId()
         {
             return model.WeaponId;
@@ -102,9 +98,9 @@ namespace Komastar.IdleMiner.Player
             model.EquipGear(gearData);
         }
 
-        private void Attack()
+        private void AfterInteract(IInteractResult result)
         {
-            enemyPresenter.TakeDamage(model.MaxAtk);
+            Debug.Log(result);
         }
 
         public void TakeDamage(int damage)

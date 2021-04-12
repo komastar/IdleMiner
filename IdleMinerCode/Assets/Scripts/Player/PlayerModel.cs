@@ -55,6 +55,9 @@ namespace Komastar.IdleMiner.Player
         }
 
         [JsonIgnore]
+        public float AtkSpeed { get => Current.AtkSpeed; }
+
+        [JsonIgnore]
         public Dictionary<EGearType, StatusDO> Mod;
 
         [SerializeField]

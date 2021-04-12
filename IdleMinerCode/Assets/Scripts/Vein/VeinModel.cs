@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Komastar.IdleMiner.Data;
+using Komastar.IdleMiner.Interface;
+using UnityEngine;
 
 namespace Komastar.IdleMiner.Vein
 {
@@ -50,24 +52,24 @@ namespace Komastar.IdleMiner.Vein
             }
         }
 
-        public int Query()
+        public IInteractResult Query()
         {
-            int query;
+            QueryDO query = new QueryDO();
             switch (VeinSize)
             {
                 case EVeinSize.Small:
-                    query = Random.Range(1, 3);
+                    query.Amount = Random.Range(1, 3);
                     break;
                 case EVeinSize.Normal:
-                    query = Random.Range(2, 5);
+                    query.Amount = Random.Range(2, 5);
                     break;
                 case EVeinSize.Large:
-                    query = Random.Range(3, 7);
+                    query.Amount = Random.Range(3, 7);
                     break;
                 case EVeinSize.None:
                 case EVeinSize.Count:
                 default:
-                    query = 1;
+                    query.Amount = 1;
                     break;
             }
 

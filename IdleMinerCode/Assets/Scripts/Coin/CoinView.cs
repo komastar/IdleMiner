@@ -14,6 +14,11 @@ namespace Komastar.IdleMiner.Coin
 
         public CoinController CoinCtrl;
 
+        private void OnDisable()
+        {
+            transform.position = Vector3.zero;
+        }
+
         private void Update()
         {
             if (lifeTime < Time.time)
@@ -32,7 +37,6 @@ namespace Komastar.IdleMiner.Coin
         public void TurnOff()
         {
             coinBody.velocity = Vector2.zero;
-            gameObject.SetActive(false);
             CoinCtrl.Return(this);
         }
 

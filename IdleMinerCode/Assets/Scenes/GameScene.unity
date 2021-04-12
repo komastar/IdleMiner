@@ -1635,7 +1635,7 @@ GameObject:
   - component: {fileID: 674815061}
   - component: {fileID: 674815062}
   - component: {fileID: 674815063}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2019,10 +2019,12 @@ MonoBehaviour:
       Atk: 0
       Hp: 0
       MoveSpeed: 0
+      AtkSpeed: 0
     Max:
       Atk: 0
       Hp: 0
       MoveSpeed: 0
+      AtkSpeed: 0
     StageLevel: 0
     WeaponId: 0
     maxHp: 0
@@ -2032,10 +2034,12 @@ MonoBehaviour:
         Atk: 0
         Hp: 0
         MoveSpeed: 0
+        AtkSpeed: 0
       Growth:
         Atk: 0
         Hp: 0
         MoveSpeed: 0
+        AtkSpeed: 0
   infoView: {fileID: 774092592}
   equipPresenter: {fileID: 173637398}
   enemyPresenter: {fileID: 379668964}
@@ -2466,7 +2470,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1077010330}
-  m_BodyType: 2
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

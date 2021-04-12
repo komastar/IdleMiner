@@ -1,4 +1,5 @@
 ﻿using Komastar.IdleMiner.Data;
+using Komastar.IdleMiner.Interface;
 using Komastar.IdleMiner.Manager;
 using Komastar.IdleMiner.Player;
 using UnityEngine;
@@ -20,21 +21,6 @@ namespace Komastar.IdleMiner.Enemy
         [SerializeField]
         private PlayerPresenter playerPresenter;
 
-        private bool isCombat;
-        private float nextAttackTime;
-
-        private void Update()
-        {
-            if (isCombat)
-            {
-                if (nextAttackTime <= Time.time)
-                {
-                    nextAttackTime = Time.time + 1.5f;
-                    view.Attack();
-                }
-            }
-        }
-
         public void Setup(WaveDO wave)
         {
             if (ReferenceEquals(null, dataManager))
@@ -52,7 +38,7 @@ namespace Komastar.IdleMiner.Enemy
 
             view.Setup();
             view.OnAttack += Attack;
-            view.OnTrigger += OnTriggerView;
+            view.OnTriggerEnter += TriggerEnter;
             view.SetHp(model.Current.Hp, model.Max.Hp);
         }
 
@@ -67,9 +53,8 @@ namespace Komastar.IdleMiner.Enemy
             view.TakeDamage(damage);
         }
 
-        private void OnTriggerView(bool isCollision)
+        private void TriggerEnter(IInteractable target)
         {
-            isCombat = isCollision;
         }
 
         public void Attack()

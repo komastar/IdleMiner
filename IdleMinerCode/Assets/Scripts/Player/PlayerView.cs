@@ -1,5 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
-using DG.Tweening;
+﻿using DG.Tweening;
+using Komastar.IdleMiner.Interface;
 using Komastar.IdleMiner.UI;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,7 +8,9 @@ namespace Komastar.IdleMiner.Player
 {
     public class PlayerView : MonoBehaviour
     {
-        public UnityAction<bool> OnTrigger;
+        public UnityAction<IInteractResult> OnAfterInteract;
+        public UnityAction<IInteractable> OnTriggerEnter;
+        public UnityAction OnTriggerExit;
         public UnityAction OnAttack;
 
         protected UIDamageTextPresenter damageTextParent;
@@ -19,6 +21,8 @@ namespace Komastar.IdleMiner.Player
         [SerializeField]
         private CharacterView characterView;
 
+        public IInteractable Target;
+
         private void Awake()
         {
             damageTextParent = UIDamageTextPresenter.Get();
@@ -27,12 +31,21 @@ namespace Komastar.IdleMiner.Player
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            OnTrigger?.Invoke(true);
+            var interactable = collision.gameObject.GetComponent<IInteractable>();
+            if (!ReferenceEquals(null, interactable))
+            {
+                Target = interactable;
+            }
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            OnTrigger?.Invoke(false);
+            var interactable = collision.gameObject.GetComponent<IInteractable>();
+            if (!ReferenceEquals(null, interactable)
+                && Target == interactable)
+            {
+                Target = null;
+            }
         }
 
         private void OnDestroy()
@@ -41,7 +54,7 @@ namespace Komastar.IdleMiner.Player
             ViewTransform.DOComplete();
         }
 
-        public virtual void Attack()
+        public virtual void Interact()
         {
             characterView.PlayAttack();
         }
@@ -55,7 +68,8 @@ namespace Komastar.IdleMiner.Player
 
         private void OnAttackCallback()
         {
-            OnAttack?.Invoke();
+            var interactResult = Target.Interact();
+            OnAfterInteract?.Invoke(interactResult);
         }
     }
 }

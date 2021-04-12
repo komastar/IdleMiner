@@ -1,4 +1,6 @@
 ﻿using Komastar.IdleMiner.Coin;
+using Komastar.IdleMiner.Data;
+using Komastar.IdleMiner.Interface;
 using UnityEngine;
 
 namespace Komastar.IdleMiner.Vein
@@ -19,21 +21,24 @@ namespace Komastar.IdleMiner.Vein
         {
             model = VeinModel.Create();
             model.Init();
+
+            view.OnInteract += Interact;
         }
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                Query();
+                Interact();
             }
         }
 
-        public int Query()
+        public IInteractResult Interact()
         {
-            coinCtrl.CreateCoins(coinSpringTransform.position, 1);
+            var result = model.Query();
+            coinCtrl.CreateCoins(coinSpringTransform.position, result.Amount);
 
-            return model.Query();
+            return result;
         }
     }
 }

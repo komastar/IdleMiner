@@ -15,23 +15,9 @@ namespace Komastar.IdleMiner.Enemy
         public RectTransform UIHpBarTransform;
         public UIHpBarView uiHpBarView;
 
-        private void Awake()
-        {
-        }
-
         private void LateUpdate()
         {
             UIHpBarTransform.position = cam.WorldToScreenPoint(HpBarPosition.position);
-        }
-
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            OnTrigger?.Invoke(true);
-        }
-
-        private void OnTriggerExit2D(Collider2D collision)
-        {
-            OnTrigger?.Invoke(false);
         }
 
         private void OnDestroy()
@@ -51,7 +37,7 @@ namespace Komastar.IdleMiner.Enemy
                 damageTextParent = UIDamageTextPresenter.Get();
             }
 
-            OnTrigger = null;
+            OnTriggerEnter = null;
             OnAttack = null;
             gameObject.SetActive(true);
             UIHpBarTransform.gameObject.SetActive(true);
@@ -79,7 +65,7 @@ namespace Komastar.IdleMiner.Enemy
             uiHpBarView.SetValue(hp, maxHp);
         }
 
-        public override void Attack()
+        public override void Interact()
         {
             AttackAsync().Forget();
         }
