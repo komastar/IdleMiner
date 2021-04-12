@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coinRenderer: {fileID: 3038429378594814412}
   coinBody: {fileID: 2844715549004069361}
+  CoinCtrl: {fileID: 0}
 --- !u!212 &3038429378594814412
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -113,7 +114,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.25
+  m_Radius: 0.125
 --- !u!50 &2844715549004069361
 Rigidbody2D:
   serializedVersion: 4

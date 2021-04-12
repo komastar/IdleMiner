@@ -8,8 +8,6 @@ namespace Komastar.IdleMiner.UI.Player
         public UILabelTextView ExpView;
         public UILabelTextView AtkView;
 
-        public UIHpBarView HpBarView;
-
         public void OnLevelUp(int level)
         {
             LevelView.SetValue(level);
@@ -18,11 +16,6 @@ namespace Komastar.IdleMiner.UI.Player
         public void OnEarnExp(int exp, int maxExp)
         {
             ExpView.SetValue(exp, maxExp);
-        }
-
-        public void OnChangeHp(int hp, int maxHp)
-        {
-            HpBarView.SetValue(hp, maxHp);
         }
 
         public void OnChangeAtk(int atk)

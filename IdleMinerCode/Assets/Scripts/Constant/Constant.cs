@@ -14,7 +14,7 @@ namespace Komastar.IdleMiner
         public static class Max
         {
             public static int Level => 60;
-            public static int EnemyCount => 10;
+            public static int SpawnCount => 10;
         }
 
         public static float ExpStep => 1.5f;

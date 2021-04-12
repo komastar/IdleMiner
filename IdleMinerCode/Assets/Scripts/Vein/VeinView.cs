@@ -1,16 +1,26 @@
 ﻿using Komastar.IdleMiner.Interface;
-using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Komastar.IdleMiner.Vein
 {
-    public class VeinView : MonoBehaviour, IInteractable
+    public class VeinView : MonoBehaviour, IQueryable, IView
     {
-        public Func<IInteractResult> OnInteract;
+        public UnityAction<IQueryRequest> OnQuery;
 
-        public IInteractResult Interact()
+        public void Query(IQueryRequest request)
         {
-            return OnInteract?.Invoke();
+            OnQuery?.Invoke(request);
+        }
+
+        public void TurnOff()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public void TurnOn()
+        {
+            gameObject.SetActive(true);
         }
     }
 }

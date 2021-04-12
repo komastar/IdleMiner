@@ -1,5 +1,7 @@
 ﻿using Komastar.IdleMiner.Data;
+using Komastar.IdleMiner.Interface;
 using Komastar.IdleMiner.Manager;
+using Komastar.IdleMiner.Vein;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Profiling;
 
 namespace Komastar.IdleMiner.Player
 {
@@ -55,7 +58,7 @@ namespace Komastar.IdleMiner.Player
         }
 
         [JsonIgnore]
-        public float AtkSpeed { get => Current.AtkSpeed; }
+        public float QuerySpeed { get => Current.AtkSpeed; }
 
         [JsonIgnore]
         public Dictionary<EGearType, StatusDO> Mod;
@@ -91,6 +94,8 @@ namespace Komastar.IdleMiner.Player
 
         public void Setup()
         {
+            VeinModel.OnQueryDone.AddListener(OnQueryDone);
+
             Mod = new Dictionary<EGearType, StatusDO>();
 
             playerData = DataManager.Get().GetStatus(0);
@@ -162,33 +167,11 @@ namespace Komastar.IdleMiner.Player
             }
         }
 
-        public void TakeDamage(int damage)
+        public void OnQueryDone(IQueryResponse response)
         {
-            OnTakeDamage?.Invoke(damage);
-            Current.Hp -= damage;
-            Current.Hp = Mathf.Clamp(Current.Hp, 0, MaxHp);
-            OnChangeHp?.Invoke(Current.Hp, MaxHp);
-        }
-
-        public void EquipGear(GearDO gearData)
-        {
-            WeaponId = gearData.Id;
-            if (Mod.ContainsKey(gearData.GearType))
-            {
-                maxAtk -= Mod[gearData.GearType].Atk;
-                maxHp -= Mod[gearData.GearType].Hp;
-                Mod[gearData.GearType] = gearData.Status;
-            }
-            else
-            {
-                Mod.Add(gearData.GearType, gearData.Status);
-            }
-
-            maxAtk += Mod[gearData.GearType].Atk;
-            maxHp += Mod[gearData.GearType].Hp;
-
-            OnChangeAtk?.Invoke(MaxAtk);
-            OnChangeHp?.Invoke(Current.Hp, MaxHp);
+            Profiler.BeginSample("OnQueryDone");
+            Debug.Log($"{response.Coin.CoinType} : {response.Amount}");
+            Profiler.EndSample();
         }
     }
 }

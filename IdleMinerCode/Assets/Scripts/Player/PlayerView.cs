@@ -1,6 +1,7 @@
-﻿using DG.Tweening;
+﻿using Komastar.IdleMiner.Data;
 using Komastar.IdleMiner.Interface;
 using Komastar.IdleMiner.UI;
+using Komastar.IdleMiner.UI.Player;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,10 +9,9 @@ namespace Komastar.IdleMiner.Player
 {
     public class PlayerView : MonoBehaviour
     {
-        public UnityAction<IInteractResult> OnAfterInteract;
-        public UnityAction<IInteractable> OnTriggerEnter;
-        public UnityAction OnTriggerExit;
-        public UnityAction OnAttack;
+        public UnityAction OnQueryAction;
+        public UnityAction<IQueryable> OnTargetEnter;
+        public UnityAction<IQueryable> OnTargetExit;
 
         protected UIDamageTextPresenter damageTextParent;
 
@@ -21,42 +21,40 @@ namespace Komastar.IdleMiner.Player
         [SerializeField]
         private CharacterView characterView;
 
-        public IInteractable Target;
+        public UIPlayerInfoView InfoView;
 
         private void Awake()
         {
             damageTextParent = UIDamageTextPresenter.Get();
-            characterView.OnAttack += OnAttackCallback;
+            characterView.OnTriggerAnimEvent += QueryAction;
+        }
+
+        private void OnDestroy()
+        {
+            OnQueryAction = null;
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var interactable = collision.gameObject.GetComponent<IInteractable>();
-            if (!ReferenceEquals(null, interactable))
+            var queryTarget = collision.gameObject.GetComponent<IQueryable>();
+            if (!ReferenceEquals(null, queryTarget))
             {
-                Target = interactable;
+                OnTargetEnter?.Invoke(queryTarget);
             }
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            var interactable = collision.gameObject.GetComponent<IInteractable>();
-            if (!ReferenceEquals(null, interactable)
-                && Target == interactable)
+            var queryTarget = collision.gameObject.GetComponent<IQueryable>();
+            if (!ReferenceEquals(null, queryTarget))
             {
-                Target = null;
+                OnTargetExit?.Invoke(queryTarget);
             }
         }
 
-        private void OnDestroy()
+        public virtual void Query()
         {
-            OnAttack = null;
-            ViewTransform.DOComplete();
-        }
-
-        public virtual void Interact()
-        {
-            characterView.PlayAttack();
+            characterView.PlayQuery();
         }
 
         public void TakeDamage(int damage)
@@ -66,10 +64,9 @@ namespace Komastar.IdleMiner.Player
             damageText.TurnOn();
         }
 
-        private void OnAttackCallback()
+        private void QueryAction()
         {
-            var interactResult = Target.Interact();
-            OnAfterInteract?.Invoke(interactResult);
+            OnQueryAction?.Invoke();
         }
     }
 }

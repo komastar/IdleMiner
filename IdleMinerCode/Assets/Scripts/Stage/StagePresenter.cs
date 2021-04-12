@@ -1,11 +1,7 @@
 ﻿using DG.Tweening;
-using Komastar.IdleMiner.Data;
-using Komastar.IdleMiner.Enemy;
 using Komastar.IdleMiner.Manager;
 using Komastar.IdleMiner.Player;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using Komastar.IdleMiner.Vein;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,7 +10,7 @@ namespace Komastar.IdleMiner.Stage
     public class StagePresenter : MonoBehaviour
     {
         public static UnityAction<int> OnChangeStageLevel;
-        public static UnityAction<int> OnChangeEnemyCount;
+        public static UnityAction<int> OnChangeSpawnCount;
 
         private DataManager dataManager;
 
@@ -26,35 +22,26 @@ namespace Komastar.IdleMiner.Stage
         private PlayerPresenter playerPresenter;
 
         [SerializeField]
-        private EnemyPresenter enemyPresenter;
-
-        [SerializeField]
         private int stageLevel;
         [SerializeField]
-        private int enemySpawnCount;
+        private int spawnCount;
+
+        [SerializeField]
+        private VeinSpawner veinSpawner;
 
         private void Awake()
         {
-#if UNITY_EDITOR
-            EditorBuildSettings.scenes = new EditorBuildSettingsScene[]
-                {
-                    new EditorBuildSettingsScene("Assets/Scenes/GameScene.unity", true)
-                };
-#endif
             DOTween.Init();
+            VeinModel.Init();
 
-            OnChangeEnemyCount = null;
+            OnChangeSpawnCount = null;
             OnChangeStageLevel = null;
-            enemySpawnCount = 0;
+
+            spawnCount = 0;
 
             dataManager = DataManager.Get();
             dataManager.Init();
 
-            var stage = dataManager.GetStage(1);
-
-            model = new StageModel(stage);
-
-            view.Setup();
             view.OnScrollReset += OnScrollReset;
         }
 
@@ -63,7 +50,7 @@ namespace Komastar.IdleMiner.Stage
             playerPresenter.Setup();
             stageLevel = playerPresenter.GetStageLevel();
             OnChangeStageLevel?.Invoke(stageLevel);
-            OnChangeEnemyCount?.Invoke(enemySpawnCount);
+            OnChangeSpawnCount?.Invoke(spawnCount);
             OnScrollReset();
         }
 
@@ -74,17 +61,15 @@ namespace Komastar.IdleMiner.Stage
 
         public void OnScrollReset()
         {
-            WaveDO wave = model.GetEnemy();
-            wave.Level += stageLevel;
-            enemyPresenter.Setup(wave);
-            ++enemySpawnCount;
-            if (Constant.Max.EnemyCount < enemySpawnCount)
+            ++spawnCount;
+            veinSpawner.Spawn();
+            if (Constant.Max.SpawnCount < spawnCount)
             {
-                enemySpawnCount = 1;
+                spawnCount = 1;
                 ++stageLevel;
                 OnChangeStageLevel?.Invoke(stageLevel);
             }
-            OnChangeEnemyCount?.Invoke(enemySpawnCount);
+            OnChangeSpawnCount?.Invoke(spawnCount);
         }
     }
 }

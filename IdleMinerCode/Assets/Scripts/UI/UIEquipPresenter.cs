@@ -13,10 +13,9 @@ namespace Komastar.IdleMiner.UI
         [SerializeField]
         private UIGearPresenter uiGearPresenter;
 
-        public void Equip(GearDO gear)
+        private void Awake()
         {
-            weaponView.Setup(gear);
-            playerPresenter.EquipGear(gear);
+            weaponView.OnClickView += OnClickEquipButton;
         }
 
         public async void OnClickEquipButton()
@@ -30,7 +29,6 @@ namespace Komastar.IdleMiner.UI
                 UISelectResponse<GearDO> gear = await uiGearPresenter.Open();
                 if (null != gear)
                 {
-                    Equip(gear.Data);
                 }
             }
         }

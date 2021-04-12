@@ -1,23 +1,27 @@
-﻿using Komastar.IdleMiner.Interface;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace Komastar.IdleMiner.Player
 {
     public class CharacterView : MonoBehaviour
     {
-        public UnityAction OnAttack;
+        public UnityAction OnTriggerAnimEvent;
 
         public Animator characterAnimator;
 
-        public void PlayAttack()
+        private void OnDestroy()
+        {
+            OnTriggerAnimEvent = null;
+        }
+
+        public void PlayQuery()
         {
             characterAnimator.Play("PlayerMining");
         }
 
-        private void OnAttackAction()
+        private void OnActionQuery()
         {
-            OnAttack?.Invoke();
+            OnTriggerAnimEvent?.Invoke();
         }
     }
 }

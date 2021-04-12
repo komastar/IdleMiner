@@ -10,22 +10,12 @@ namespace Komastar.IdleMiner.Stage
 
         [SerializeField]
         private Transform lastBackgroundElem;
-        [SerializeField]
-        private Text stageLevelText;
-        [SerializeField]
-        private Text stageEnemyCountText;
 
         private float scrollLimit;
 
         private void Awake()
         {
             scrollLimit = -lastBackgroundElem.position.x;
-        }
-
-        public void Setup()
-        {
-            StagePresenter.OnChangeStageLevel += SetStageLevel;
-            StagePresenter.OnChangeEnemyCount += SetEnemyCount;
         }
 
         public void ScrollBackground(float speed)
@@ -36,16 +26,6 @@ namespace Komastar.IdleMiner.Stage
                 transform.position = Vector3.zero;
                 OnScrollReset?.Invoke();
             }
-        }
-
-        public void SetStageLevel(int level)
-        {
-            stageLevelText.text = $"Stage : {level + 1}";
-        }
-
-        public void SetEnemyCount(int count)
-        {
-            stageEnemyCountText.text = $"{count} / {Constant.Max.EnemyCount}";
         }
     }
 }

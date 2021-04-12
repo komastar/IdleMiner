@@ -3,8 +3,8 @@
     "Base": {
         "Atk": 1,
         "Hp": 100,
-        "MoveSpeed": 5.0,
-        "AtkSpeed": 5.0
+        "MoveSpeed": 1.5,
+        "AtkSpeed": 2.5
     },
     "Growth": {
         "Atk": 1,

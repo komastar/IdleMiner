@@ -1,44 +1,45 @@
 ﻿using Komastar.IdleMiner.Coin;
-using Komastar.IdleMiner.Data;
 using Komastar.IdleMiner.Interface;
 using UnityEngine;
 
 namespace Komastar.IdleMiner.Vein
 {
-    public class VeinPresenter : MonoBehaviour
+    public class VeinPresenter : MonoBehaviour, IPresenter
     {
         [SerializeField]
         private VeinView view;
         private VeinModel model;
 
         [SerializeField]
-        private CoinController coinCtrl;
-
-        [SerializeField]
         private Transform coinSpringTransform;
 
-        private void Awake()
-        {
-            model = VeinModel.Create();
-            model.Init();
+        public CoinController CoinCtrl;
 
-            view.OnInteract += Interact;
+        public void Init()
+        {
+            model = new VeinModel(view.transform);
+            model.OnChangeHp += OnChangeVeinHp;
+
+            view.OnQuery += Query;
         }
 
-        private void Update()
+        public void Ready()
         {
-            if (Input.GetKeyDown(KeyCode.Q))
+            model.Ready();
+            view.TurnOn();
+        }
+
+        private void OnChangeVeinHp(int hp)
+        {
+            if (hp <= 0)
             {
-                Interact();
+                view.TurnOff();
             }
         }
 
-        public IInteractResult Interact()
+        public void Query(IQueryRequest request)
         {
-            var result = model.Query();
-            coinCtrl.CreateCoins(coinSpringTransform.position, result.Amount);
-
-            return result;
+            model.Query(request);
         }
     }
 }

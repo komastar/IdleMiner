@@ -14,7 +14,6 @@ namespace Komastar.IdleMiner.Manager
 
         private Dictionary<int, StageDO> stageDb;
         private Dictionary<int, UnitStatusDO> statusDb;
-        private Dictionary<int, EnemyDO> enemyDb;
 
         private Dictionary<int, GearDO> gearDb;
 
@@ -32,7 +31,6 @@ namespace Komastar.IdleMiner.Manager
 
             LoadDatabase(ref stageDb);
             LoadDatabase(ref statusDb);
-            LoadDatabase(ref enemyDb);
             LoadDatabase(ref gearDb);
             isInit = true;
         }
@@ -86,20 +84,6 @@ namespace Komastar.IdleMiner.Manager
             else
             {
                 Debug.LogError("Can not find stage");
-
-                return default;
-            }
-        }
-
-        public EnemyDO GetEnemy(int id)
-        {
-            if (enemyDb.ContainsKey(id))
-            {
-                return enemyDb[id];
-            }
-            else
-            {
-                Debug.LogError("Can not find enemy");
 
                 return default;
             }
