@@ -48,7 +48,6 @@ namespace Komastar.IdleMiner.Stage
         private void Start()
         {
             playerPresenter.Setup();
-            stageLevel = playerPresenter.GetStageLevel();
             OnChangeStageLevel?.Invoke(stageLevel);
             OnChangeSpawnCount?.Invoke(spawnCount);
             OnScrollReset();

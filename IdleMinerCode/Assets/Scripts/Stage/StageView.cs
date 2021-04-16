@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace Komastar.IdleMiner.Stage
 {
@@ -11,10 +10,12 @@ namespace Komastar.IdleMiner.Stage
         [SerializeField]
         private Transform lastBackgroundElem;
 
+        private Vector3 initPosition;
         private float scrollLimit;
 
         private void Awake()
         {
+            initPosition = transform.position;
             scrollLimit = -lastBackgroundElem.position.x;
         }
 
@@ -23,7 +24,7 @@ namespace Komastar.IdleMiner.Stage
             transform.position += Vector3.left * speed * Time.deltaTime;
             if (transform.position.x <= scrollLimit)
             {
-                transform.position = Vector3.zero;
+                transform.position = initPosition;
                 OnScrollReset?.Invoke();
             }
         }

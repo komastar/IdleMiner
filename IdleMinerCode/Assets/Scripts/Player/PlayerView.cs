@@ -1,72 +1,40 @@
-﻿using Komastar.IdleMiner.Data;
-using Komastar.IdleMiner.Interface;
-using Komastar.IdleMiner.UI;
-using Komastar.IdleMiner.UI.Player;
+﻿using Komastar.IdleMiner.Interface;
 using UnityEngine;
 using UnityEngine.Events;
+using UniRx;
+using UniRx.Triggers;
 
 namespace Komastar.IdleMiner.Player
 {
     public class PlayerView : MonoBehaviour
     {
-        public UnityAction OnQueryAction;
+        public UnityAction OnTriggerQuery;
         public UnityAction<IQueryable> OnTargetEnter;
         public UnityAction<IQueryable> OnTargetExit;
 
-        protected UIDamageTextPresenter damageTextParent;
-
-        public Transform ViewTransform;
-        public Transform HeadTransform;
-
-        [SerializeField]
-        private CharacterView characterView;
-
-        public UIPlayerInfoView InfoView;
+        [SerializeField] private CharacterView characterView;
 
         private void Awake()
         {
-            damageTextParent = UIDamageTextPresenter.Get();
-            characterView.OnTriggerAnimEvent += QueryAction;
+            this.OnTriggerEnter2DAsObservable()
+                .Where(c => false == ReferenceEquals(null, c.GetComponent<IQueryable>()))
+                .Select(c => c.GetComponent<IQueryable>())
+                .Subscribe((x) => OnTargetEnter?.Invoke(x));
+
+            this.OnTriggerExit2DAsObservable()
+                .Where(c => false == ReferenceEquals(null, c.GetComponent<IQueryable>()))
+                .Select(c => c.GetComponent<IQueryable>())
+                .Subscribe(x => OnTargetExit?.Invoke(x));
         }
 
-        private void OnDestroy()
+        public void Setup()
         {
-            OnQueryAction = null;
+            characterView.OnTriggerAnimEvent += OnTriggerQuery;
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            var queryTarget = collision.gameObject.GetComponent<IQueryable>();
-            if (!ReferenceEquals(null, queryTarget))
-            {
-                OnTargetEnter?.Invoke(queryTarget);
-            }
-        }
-
-        private void OnTriggerExit2D(Collider2D collision)
-        {
-            var queryTarget = collision.gameObject.GetComponent<IQueryable>();
-            if (!ReferenceEquals(null, queryTarget))
-            {
-                OnTargetExit?.Invoke(queryTarget);
-            }
-        }
-
-        public virtual void Query()
+        public void Query()
         {
             characterView.PlayQuery();
-        }
-
-        public void TakeDamage(int damage)
-        {
-            var damageText = damageTextParent.Rent(HeadTransform.position);
-            damageText.SetDamage(damage);
-            damageText.TurnOn();
-        }
-
-        private void QueryAction()
-        {
-            OnQueryAction?.Invoke();
         }
     }
 }

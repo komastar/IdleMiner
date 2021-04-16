@@ -1,41 +1,33 @@
 ﻿using Komastar.IdleMiner.Data;
 using Komastar.IdleMiner.Interface;
-using Komastar.IdleMiner.Manager;
-using Komastar.IdleMiner.Stage;
-using Komastar.IdleMiner.UI;
+using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Komastar.IdleMiner.Player
 {
     [SelectionBase]
     public class PlayerPresenter : MonoBehaviour
     {
-        [SerializeField]
-        private PlayerView view;
-        [SerializeField]
-        private PlayerModel model;
+        [SerializeField] private PlayerView view;
+        [SerializeField] private PlayerModel model;
 
-        [SerializeField]
-        private UIEquipPresenter equipPresenter;
-
-        private float nextAttackTime;
+        private float nextQueryTime;
 
         public IQueryable TargetVein;
         public IQueryRequest QueryRequest;
 
         private void OnDestroy()
         {
-            model.Save();
+            PlayerModel.Save(model);
         }
 
         private void Update()
         {
             if (!ReferenceEquals(null, TargetVein))
             {
-                if (nextAttackTime <= Time.time)
+                if (nextQueryTime <= Time.time)
                 {
-                    nextAttackTime = Time.time + model.QuerySpeed;
+                    nextQueryTime = Time.time + model.QuerySpeed;
                     view.Query();
                 }
             }
@@ -43,50 +35,20 @@ namespace Komastar.IdleMiner.Player
 
         public void Setup()
         {
-            model = PlayerModel.Initialize();
-            model.OnLevelUp += view.InfoView.OnLevelUp;
-            model.OnChangeExp += view.InfoView.OnEarnExp;
-            model.OnChangeAtk += view.InfoView.OnChangeAtk;
+            model = PlayerModel.Load();
             model.Setup();
 
-            StagePresenter.OnChangeStageLevel += model.OnChangeStageLevel;
-
-            view.OnTargetEnter += (t) =>
-            {
-                TargetVein = t;
-            };
-            view.OnTargetExit += (t) =>
-            {
-                if (t == TargetVein)
-                {
-                    TargetVein = null;
-                }
-            };
-            view.OnQueryAction += Query;
+            view.OnTargetEnter += (target) => { TargetVein = target; };
+            view.OnTargetExit += (target) => { TargetVein = (target == TargetVein) ? null : TargetVein; };
+            view.OnTriggerQuery += Query;
+            view.Setup();
 
             QueryRequest = new QueryRequest() { Power = 1 };
         }
 
-        public int GetStageLevel()
-        {
-            return model.StageLevel;
-        }
-
         public float GetMoveSpeed()
         {
-            if (!ReferenceEquals(null, TargetVein))
-            {
-                return 0f;
-            }
-            else
-            {
-                return model.Current.MoveSpeed;
-            }
-        }
-
-        public int GetWeaponId()
-        {
-            return model.WeaponId;
+            return (!ReferenceEquals(null, TargetVein)) ? 0f : model.MoveSpeed;
         }
 
         private void Query()
